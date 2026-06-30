@@ -25,6 +25,7 @@ while (!Raylib.WindowShouldClose())
 
     Observers.DrawUI();
 
+    Raylib.DrawText("Hold right click to rotate camera", 20, 20, 20, Color.RayWhite);
     Raylib.DrawFPS(Raylib.GetScreenWidth() - 150, 10);
 
     Raylib.EndDrawing();

@@ -12,6 +12,8 @@ namespace GridTown.Engine.GameObjects.Movements
         float yaw;
         float pitch;
 
+        Vector2 mousePosBeforeDisable = new();
+
         public static Camera3D instance = new()
         {
             Position = new Vector3(0, 6, 0),
@@ -21,14 +23,12 @@ namespace GridTown.Engine.GameObjects.Movements
             Projection = CameraProjection.Perspective
         };
 
-        public Camera(float moveSpeed = 40f, float rotationSpeed = 0.003f)
+        public Camera(float moveSpeed = 10f, float rotationSpeed = 0.003f)
         {
             this.moveSpeed = moveSpeed;
             this.rotationSpeed = rotationSpeed;
 
             position = instance.Position;
-
-            Raylib.DisableCursor();
         }
 
         public void Update(float dt)
@@ -73,6 +73,11 @@ namespace GridTown.Engine.GameObjects.Movements
 
         void CameraRotation()
         {
+            SetCursorState(out bool canRotate);
+
+            if (!canRotate)
+                return;
+
             Vector2 mouseDelta = Raylib.GetMouseDelta();
 
             yaw -= mouseDelta.X * rotationSpeed;
@@ -81,6 +86,25 @@ namespace GridTown.Engine.GameObjects.Movements
             float limit = MathF.PI / 2f - 0.01f;
 
             pitch = Math.Clamp(pitch, -limit, limit);
+        }
+
+        void SetCursorState(out bool canRotate)
+        {
+            if (Raylib.IsMouseButtonReleased(MouseButton.Right))
+            {
+                Vector2Int v = new Vector2Int(mousePosBeforeDisable);
+                Raylib.EnableCursor();
+                Raylib.SetMousePosition(v.X, v.Y);
+            }
+
+            if (Raylib.IsMouseButtonPressed(MouseButton.Right))
+            {
+                mousePosBeforeDisable = Raylib.GetMousePosition();
+                Raylib.DisableCursor();
+                Console.WriteLine(mousePosBeforeDisable);
+            }
+
+            canRotate = Raylib.IsMouseButtonDown(MouseButton.Right);
         }
 
         Vector3 GetForward()

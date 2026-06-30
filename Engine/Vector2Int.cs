@@ -1,4 +1,6 @@
-﻿namespace GridTown.Engine
+﻿using System.Numerics;
+
+namespace GridTown.Engine
 {
     internal struct Vector2Int
     {
@@ -10,6 +12,8 @@
         }
 
         public Vector2Int() : this(0, 0) { }
+
+        public Vector2Int(Vector2 vector) : this((int)vector.X, (int)vector.Y) { }
 
         public static int DistanceSquared(Vector2Int v1, Vector2Int v2)
         {
